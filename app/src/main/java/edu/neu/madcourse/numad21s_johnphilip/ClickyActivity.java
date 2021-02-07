@@ -19,4 +19,6 @@ public class ClickyActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    
+
 }
