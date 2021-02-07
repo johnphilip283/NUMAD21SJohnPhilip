@@ -12,4 +12,6 @@
 
     <string name="about_name">Name: John Philip</string>
     <string name="about_email">Email: johnphilip283@gmail.com</string>
+
+    <string name="pressed_button_text">Pressed: </string>
 </resources>
