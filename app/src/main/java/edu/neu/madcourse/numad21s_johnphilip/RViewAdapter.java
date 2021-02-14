@@ -1,26 +1,19 @@
 package edu.neu.madcourse.numad21s_johnphilip;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import edu.neu.madcourse.numad21s_johnphilip.ItemCard;
-import edu.neu.madcourse.numad21s_johnphilip.ItemClickListener;
-import edu.neu.madcourse.numad21s_johnphilip.RViewHolder;
 
 public class RViewAdapter extends RecyclerView.Adapter<RViewHolder> {
 
     private final List<ItemCard> itemList;
     private ItemClickListener listener;
 
-    //Constructor
+    // Constructor
     public RViewAdapter(List<ItemCard> itemList) {
         this.itemList = itemList;
     }

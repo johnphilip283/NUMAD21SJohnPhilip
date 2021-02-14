@@ -1,11 +1,10 @@
 package edu.neu.madcourse.numad21s_johnphilip;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -17,6 +16,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LinkCollectorActivity extends AppCompatActivity implements LinkDialogFragment.LinkDialogListener {
 
@@ -81,20 +82,32 @@ public class LinkCollectorActivity extends AppCompatActivity implements LinkDial
         recyclerView.setAdapter(rViewAdapter);
         recyclerView.setLayoutManager(rLayoutManager);
 
-
     }
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
 
         Dialog dl = dialog.getDialog();
-        // validation
 
         String linkName = ((EditText) dl.findViewById(R.id.link_name)).getText().toString();
         String linkURL = ((EditText) dl.findViewById(R.id.link_url)).getText().toString();
 
-        links.add(0, new ItemCard(linkName, linkURL));
-        rViewAdapter.notifyItemInserted(0);
+        if (validateURL(linkURL)) {
+            links.add(0, new ItemCard(linkName, linkURL));
+            rViewAdapter.notifyItemInserted(0);
+            View parentLayout = findViewById(android.R.id.content);
+            Snackbar.make(parentLayout, R.string.link_add_confirmation, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        } else {
+            Toast.makeText(LinkCollectorActivity.this, R.string.link_add_invalid_url, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // returns true if URL is valid
+    private boolean validateURL(String url) {
+        Pattern pattern = Pattern.compile("((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(url);
+        return matcher.find();
     }
 
     @Override
