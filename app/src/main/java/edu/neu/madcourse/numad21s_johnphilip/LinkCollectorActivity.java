@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -21,7 +22,9 @@ public class LinkCollectorActivity extends AppCompatActivity implements LinkDial
 
     private List<ItemCard> links = new ArrayList<>();
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager rLayoutManger;
+    private RecyclerView.LayoutManager rLayoutManager;
+
+    private RViewAdapter rViewAdapter;
     private FloatingActionButton addButton;
 
 
@@ -47,6 +50,37 @@ public class LinkCollectorActivity extends AppCompatActivity implements LinkDial
     }
 
     private void init(Bundle savedInstanceState) {
+        initialItemData(savedInstanceState);
+        createRecyclerView();
+    }
+
+    private void initialItemData(Bundle savedInstanceState) {
+
+    }
+
+    private void createRecyclerView() {
+
+        rLayoutManager = new LinearLayoutManager(this);
+
+        recyclerView = findViewById(R.id.link_recycler_view);
+        recyclerView.setHasFixedSize(true);
+
+        rViewAdapter = new RViewAdapter(links);
+
+        ItemClickListener itemClickListener = new ItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                //attributions bond to the item has been changed
+                links.get(position).onItemClick(position);
+
+                rViewAdapter.notifyItemChanged(position);
+            }
+        };
+        rViewAdapter.setOnItemClickListener(itemClickListener);
+
+        recyclerView.setAdapter(rViewAdapter);
+        recyclerView.setLayoutManager(rLayoutManager);
+
 
     }
 
@@ -56,11 +90,11 @@ public class LinkCollectorActivity extends AppCompatActivity implements LinkDial
         Dialog dl = dialog.getDialog();
         // validation
 
-        String link_name = ((EditText) dl.findViewById(R.id.link_name)).getText().toString();
-        String link_url = ((EditText) dl.findViewById(R.id.link_url)).getText().toString();
+        String linkName = ((EditText) dl.findViewById(R.id.link_name)).getText().toString();
+        String linkURL = ((EditText) dl.findViewById(R.id.link_url)).getText().toString();
 
-        Log.v("Link Name", link_name);
-        Log.v("Link URL", link_url);
+        links.add(0, new ItemCard(linkName, linkURL));
+        rViewAdapter.notifyItemInserted(0);
     }
 
     @Override
