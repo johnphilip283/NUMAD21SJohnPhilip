@@ -10,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NUMAD21SJohnPhilip">
         <activity android:name=".ClickyActivity"></activity>
+        <activity android:name=".LinkCollectorActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

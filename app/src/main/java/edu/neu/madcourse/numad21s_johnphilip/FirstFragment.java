@@ -40,6 +40,15 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.link_collector).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), LinkCollectorActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
 }
