@@ -16,4 +16,12 @@
     <string name="pressed_button_text">Pressed: </string>
     <string name="clicky">Clicky</string>
     <string name="link_collector">Link Collector</string>
+
+    <string name="add_new_link">Add New Link</string>
+    <string name="create_link">Create Link</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="link_name">Link Name</string>
+    <string name="link_url">Link URL</string>
+
 </resources>
