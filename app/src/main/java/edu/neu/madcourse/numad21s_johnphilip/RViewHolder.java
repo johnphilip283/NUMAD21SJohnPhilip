@@ -11,7 +11,7 @@ public class RViewHolder extends RecyclerView.ViewHolder {
     public TextView linkName;
     public TextView linkURL;
 
-    public RViewHolder(@NonNull View itemView, final ItemClickListener listener) {
+    public RViewHolder(@NonNull View itemView, final LinkClickListener listener) {
         super(itemView);
 
         linkName = itemView.findViewById(R.id.item_link_name);
@@ -23,7 +23,7 @@ public class RViewHolder extends RecyclerView.ViewHolder {
                 if (listener != null) {
                     int position = getLayoutPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(position);
+                        listener.onLinkClick(linkURL.getText().toString());
                     }
                 }
             }

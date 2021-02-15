@@ -1,8 +1,6 @@
 package edu.neu.madcourse.numad21s_johnphilip;
 
-import android.util.Log;
-
-public class ItemCard implements ItemClickListener {
+public class ItemCard {
 
     private String linkName;
     private String linkURL;
@@ -18,10 +16,6 @@ public class ItemCard implements ItemClickListener {
 
     public String getLinkURL() {
         return linkURL;
-    }
-
-    public void onItemClick(int position) {
-        Log.v("ItemCard", "Clicked");
     }
 
 }

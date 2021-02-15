@@ -1,11 +1,14 @@
 package edu.neu.madcourse.numad21s_johnphilip;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,9 +18,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LinkCollectorActivity extends AppCompatActivity implements LinkDialogFragment.LinkDialogListener {
 
@@ -28,13 +30,16 @@ public class LinkCollectorActivity extends AppCompatActivity implements LinkDial
     private RViewAdapter rViewAdapter;
     private FloatingActionButton addButton;
 
+    String SIZE_ID = "SIZE";
+    String LINK_INSTANCE_ID = "LINK";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_link_collector);
 
-        init(savedInstanceState);
+        initialItemData(savedInstanceState);
+        createRecyclerView();
 
         addButton = findViewById(R.id.add_link_button);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -48,15 +53,32 @@ public class LinkCollectorActivity extends AppCompatActivity implements LinkDial
     public void showLinkDialog() {
         DialogFragment dialog = new LinkDialogFragment();
         dialog.show(getSupportFragmentManager(), "LinkDialogFragment");
-    }
-
-    private void init(Bundle savedInstanceState) {
-        initialItemData(savedInstanceState);
-        createRecyclerView();
-    }
+    };
 
     private void initialItemData(Bundle savedInstanceState) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(SIZE_ID)) {
+            if (links == null || links.size() == 0) {
+                int size = savedInstanceState.getInt(SIZE_ID);
 
+                for (int i = 0; i < size; i++) {
+                    String linkName = savedInstanceState.getString(LINK_INSTANCE_ID + i + "1");
+                    String linkURL = savedInstanceState.getString(LINK_INSTANCE_ID + i + "2");
+                    links.add(new ItemCard(linkName, linkURL));
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        int size = links == null ? 0 : links.size();
+        outState.putInt(SIZE_ID, size);
+
+        for (int i = 0; i < size; i++) {
+            outState.putString(LINK_INSTANCE_ID + i + "1", links.get(i).getLinkName());
+            outState.putString(LINK_INSTANCE_ID + i + "2", links.get(i).getLinkURL());
+        }
+        super.onSaveInstanceState(outState);
     }
 
     private void createRecyclerView() {
@@ -68,20 +90,16 @@ public class LinkCollectorActivity extends AppCompatActivity implements LinkDial
 
         rViewAdapter = new RViewAdapter(links);
 
-        ItemClickListener itemClickListener = new ItemClickListener() {
+        LinkClickListener linkClickListener = new LinkClickListener() {
             @Override
-            public void onItemClick(int position) {
-                //attributions bond to the item has been changed
-                links.get(position).onItemClick(position);
-
-                rViewAdapter.notifyItemChanged(position);
+            public void onLinkClick(String url) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
             }
         };
-        rViewAdapter.setOnItemClickListener(itemClickListener);
-
+        rViewAdapter.setOnLinkClickListener(linkClickListener);
         recyclerView.setAdapter(rViewAdapter);
         recyclerView.setLayoutManager(rLayoutManager);
-
     }
 
     @Override
@@ -92,7 +110,9 @@ public class LinkCollectorActivity extends AppCompatActivity implements LinkDial
         String linkName = ((EditText) dl.findViewById(R.id.link_name)).getText().toString();
         String linkURL = ((EditText) dl.findViewById(R.id.link_url)).getText().toString();
 
-        if (validateURL(linkURL)) {
+        if (valid(linkURL)) {
+            dialog.dismiss();
+            linkURL = standardizeURL(linkURL);
             links.add(0, new ItemCard(linkName, linkURL));
             rViewAdapter.notifyItemInserted(0);
             View parentLayout = findViewById(android.R.id.content);
@@ -103,15 +123,21 @@ public class LinkCollectorActivity extends AppCompatActivity implements LinkDial
         }
     }
 
-    // returns true if URL is valid
-    private boolean validateURL(String url) {
-        Pattern pattern = Pattern.compile("((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(url);
-        return matcher.find();
+    private boolean valid(String url) {
+        return url.length() > 4 &&
+                Arrays.asList(new String[] { ".com", ".net", ".org", ".edu" }).contains(url.substring(url.length() - 4));
+    }
+
+    private String standardizeURL(String url) {
+        if (url.endsWith("https://") || url.endsWith("http://")) {
+            return url;
+        } else {
+            return "https://" + url;
+        }
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-
+       // do standard dialog cancelling.
     }
 }
