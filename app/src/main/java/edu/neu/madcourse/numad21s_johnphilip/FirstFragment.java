@@ -1,16 +1,23 @@
 package edu.neu.madcourse.numad21s_johnphilip;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 public class FirstFragment extends Fragment {
+
+    private final int REQUEST_CODE = 1;
 
     @Override
     public View onCreateView(
@@ -51,11 +58,35 @@ public class FirstFragment extends Fragment {
         view.findViewById(R.id.locator).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), LocatorActivity.class);
-                startActivity(intent);
+                if (ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(getActivity(), LocatorActivity.class);
+                    startActivity(intent);
+                } else {
+                    requestPermissions(new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                            REQUEST_CODE);
+                }
             }
         });
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE:
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(getActivity(), LocatorActivity.class);
+                    startActivity(intent);
+                }  else {
+                   // Raise toast for explaining why user can't access this activity
+                    Toast.makeText(getActivity(), "Permission was not granted to use location on this app.", Toast.LENGTH_LONG).show();
+                }
+                return;
+        }
 
     }
 
