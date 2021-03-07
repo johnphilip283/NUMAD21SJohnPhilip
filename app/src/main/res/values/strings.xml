@@ -31,4 +31,7 @@
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
 
+    <string name="movies">Movies</string>
+    <string name="movie_prompt">Enter movie name:</string>
+    <string name="movie_input_placeholder">Movie Name</string>
 </resources>

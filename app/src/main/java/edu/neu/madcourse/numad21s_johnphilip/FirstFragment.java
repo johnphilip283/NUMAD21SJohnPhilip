@@ -3,6 +3,7 @@ package edu.neu.madcourse.numad21s_johnphilip;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Movie;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,6 +68,14 @@ public class FirstFragment extends Fragment {
                     requestPermissions(new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
                             REQUEST_CODE);
                 }
+            }
+        });
+
+        view.findViewById(R.id.button_movies).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), MovieActivity.class);
+                startActivity(intent);
             }
         });
 
