@@ -32,6 +32,17 @@
     <string name="longitude">Longitude:</string>
 
     <string name="movies">Movies</string>
-    <string name="movie_prompt">Enter movie name:</string>
+    <string name="movie_prompt">Enter movie title:</string>
     <string name="movie_input_placeholder">Movie Name</string>
+
+    <string name="search">Go!</string>
+
+
+    <string name="movie_info">Movie Information</string>
+
+    <string name="title">Title: </string>
+    <string name="year">Year: </string>
+    <string name="type">Type: </string>
+    <string name="poster">Poster: </string>
+
 </resources>
